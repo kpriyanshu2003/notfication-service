@@ -14,7 +14,7 @@ import {
 } from "./middlewares/errorHandler.middleware";
 
 export const createApp = (): Express => {
-  const app = express();
+  const app: Express = express();
 
   app.use(helmet());
   app.use(cors());

@@ -6,7 +6,7 @@ import { NotificationStatus, NotificationType } from "@prisma/client";
 import logger from "../config/logger";
 
 export class UserController {
-  async getUserNotifications(req: Request, res: Response): Promise<Response> {
+  async getUserNotifications(req: Request, res: Response): Promise<any> {
     try {
       const { id } = req.params;
       const user = await userService.findById(id);
@@ -70,3 +70,5 @@ export class UserController {
     }
   }
 }
+
+export default new UserController();

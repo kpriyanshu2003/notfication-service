@@ -5,7 +5,7 @@ import logger from "../config/logger";
 import notificationService from "../services/notification.service";
 
 export class NotificationController {
-  async sendNotification(req: Request, res: Response): Promise<Response> {
+  async sendNotification(req: Request, res: Response): Promise<any> {
     try {
       const { recipient, type, title, content } = req.body;
 
@@ -57,3 +57,5 @@ export class NotificationController {
     }
   }
 }
+
+export default new NotificationController();
