@@ -1,4 +1,3 @@
-// schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -29,9 +28,6 @@ model Notification {
   title         String
   content       String
   status        NotificationStatus @default(PENDING)
-  retryCount    Int                @default(0) @map("retry_count")
-  maxRetries    Int                @default(3) @map("max_retries")
-  metadata      Json?
   sentAt        DateTime?          @map("sent_at")
   createdAt     DateTime           @default(now()) @map("created_at")
   updatedAt     DateTime           @updatedAt @map("updated_at")
