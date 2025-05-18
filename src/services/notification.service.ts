@@ -168,6 +168,66 @@ export class NotificationService {
       throw error;
     }
   }
+
+  async markNotificationSent(
+    id: string,
+    messageId?: string
+  ): Promise<Notification> {
+    try {
+      const notification = await prisma.notification.update({
+        where: { id },
+        data: {
+          status: NotificationStatus.SENT,
+          sentAt: new Date(),
+        },
+      });
+
+      logger.info("Notification marked as sent", { notificationId: id });
+      return notification;
+    } catch (error) {
+      logger.error("Error marking notification as sent", {
+        notificationId: id,
+        error,
+      });
+      throw error;
+    }
+  }
+
+  async markNotificationFailed(
+    id: string,
+    errorMessage: string
+  ): Promise<Notification> {
+    try {
+      const notification = await prisma.notification.findUnique({
+        where: { id },
+      });
+
+      if (!notification) {
+        throw new Error(`Notification ${id} not found`);
+      }
+
+      const updated = await prisma.notification.update({
+        where: { id },
+        data: {
+          status: NotificationStatus.FAILED,
+          failureReason: `Max retries exceeded. Last error: ${errorMessage}`,
+        },
+      });
+
+      logger.warn("Notification failed permanently", {
+        notificationId: id,
+        error: errorMessage,
+      });
+
+      return updated;
+    } catch (error) {
+      logger.error("Error handling notification failure", {
+        notificationId: id,
+        error,
+      });
+      throw error;
+    }
+  }
 }
 
 export default new NotificationService();

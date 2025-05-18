@@ -2,6 +2,7 @@ import createApp from "./app";
 import { connectDatabase, disconnectDatabase } from "./config/database";
 import { env, validateEnv } from "./config/env";
 import logger from "./config/logger";
+import { connectRabbitMQ, disconnectRabbitMQ } from "./config/rabbitmq";
 
 validateEnv();
 
@@ -10,6 +11,7 @@ const startService = async (): Promise<void> => {
     logger.info("Starting service in mode: " + env.RUN_MODE);
 
     await connectDatabase();
+    await connectRabbitMQ();
     const app = createApp();
 
     const server = app.listen(env.PORT, () =>
@@ -29,6 +31,7 @@ const setupGracefulShutdown = (server: any): void => {
 
     server.close(() => logger.info("HTTP server closed"));
 
+    await disconnectRabbitMQ();
     await disconnectDatabase();
 
     logger.info("Graceful shutdown completed");

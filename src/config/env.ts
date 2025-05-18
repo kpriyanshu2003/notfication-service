@@ -10,6 +10,8 @@ export const env = {
     process.env.DATABASE_URL ||
     "postgresql://postgres:postgres@localhost:5432/notification-service",
 
+  RABBITMQ_URL: process.env.RABBITMQ_URL || "amqp://localhost:5672",
+
   // SMTP config
   SMTP_HOST: process.env.SMTP_HOST || "smtp.example.com",
   SMTP_PORT: parseInt(process.env.SMTP_PORT || "587", 10),
@@ -24,10 +26,9 @@ export const env = {
 };
 
 export const validateEnv = (): void => {
-  // const requiredVars = ["DATABASE_URL", "RABBITMQ_URL"];
-  // for (const envVar of requiredVars) {
-  //   if (!process.env[envVar]) {
-  //     console.warn(`Missing required environment variable: ${envVar}`);
-  //   }
-  // }
+  const requiredVars = ["DATABASE_URL", "RABBITMQ_URL"];
+  for (const envVar of requiredVars) {
+    if (!process.env[envVar])
+      console.warn(`Missing required environment variable: ${envVar}`);
+  }
 };
