@@ -7,6 +7,12 @@ import morgan from "morgan";
 import { env } from "./config/env";
 import logger from "./config/logger";
 
+import indexRoutes from "./routes/index.route";
+import {
+  errorHandler,
+  notFoundHandler,
+} from "./middlewares/errorHandler.middleware";
+
 export const createApp = (): Express => {
   const app = express();
 
@@ -30,6 +36,11 @@ export const createApp = (): Express => {
       .status(200)
       .json({ status: "ok", uptime: process.uptime(), timestamp: Date.now() });
   });
+
+  app.use("/", indexRoutes);
+
+  app.use(notFoundHandler);
+  app.use(errorHandler);
 
   return app;
 };
