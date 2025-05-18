@@ -2,11 +2,12 @@ import { NotificationType } from "@prisma/client";
 import { Request, Response } from "express";
 import { CreateNotificationDto } from "../types/notfication.type";
 import logger from "../config/logger";
+import notificationService from "../services/notification.service";
 
 export class NotificationController {
   async sendNotification(req: Request, res: Response): Promise<Response> {
     try {
-      const { recipient, type, title, content, metadata } = req.body;
+      const { recipient, type, title, content } = req.body;
 
       if (!recipient || !type || !title || !content) {
         return res.status(400).json({
@@ -29,7 +30,6 @@ export class NotificationController {
         type: type as NotificationType,
         title,
         content,
-        metadata,
       };
 
       const notification = await notificationService.createNotification(
