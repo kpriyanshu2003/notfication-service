@@ -1,0 +1,59 @@
+// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String?        @unique
+  phone         String?        @unique
+  fcmToken      String?        @map("fcm_token")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  notifications Notification[]
+
+  @@index([email])
+  @@index([phone])
+  @@map("users")
+}
+
+model Notification {
+  id            String             @id @default(uuid())
+  userId        String             @map("user_id")
+  type          NotificationType
+  title         String
+  content       String
+  status        NotificationStatus @default(PENDING)
+  retryCount    Int                @default(0) @map("retry_count")
+  maxRetries    Int                @default(3) @map("max_retries")
+  metadata      Json?
+  sentAt        DateTime?          @map("sent_at")
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+  failureReason String?            @map("failure_reason")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  EMAIL
+  SMS
+  IN_APP
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  PROCESSING
+}

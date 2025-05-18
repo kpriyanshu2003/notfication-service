@@ -1,4 +1,5 @@
 import createApp from "./app";
+import { connectDatabase, disconnectDatabase } from "./config/database";
 import { env, validateEnv } from "./config/env";
 import logger from "./config/logger";
 
@@ -8,6 +9,7 @@ const startService = async (): Promise<void> => {
   try {
     logger.info("Starting service in mode: " + env.RUN_MODE);
 
+    await connectDatabase();
     const app = createApp();
 
     const server = app.listen(env.PORT, () =>
@@ -26,6 +28,8 @@ const setupGracefulShutdown = (server: any): void => {
     logger.info(`${signal} received. Shutting down gracefully...`);
 
     server.close(() => logger.info("HTTP server closed"));
+
+    await disconnectDatabase();
 
     logger.info("Graceful shutdown completed");
     process.exit(0);

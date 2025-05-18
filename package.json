@@ -7,9 +7,13 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "prisma:generate": "prisma generate --schema=./src/prisma/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --schema=./src/prisma/schema.prisma",
+    "prisma:studio": "prisma studio --schema=./src/prisma/schema.prisma"
   },
   "dependencies": {
+    "@prisma/client": "5.10.0",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -25,6 +29,7 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.15.18",
     "nodemon": "^3.1.10",
+    "prisma": "5.10.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }
