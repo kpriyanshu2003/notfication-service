@@ -58,6 +58,15 @@ export class UserService {
       throw error;
     }
   }
+
+  async findById(userId: string): Promise<User | null> {
+    try {
+      return await prisma.user.findUnique({ where: { id: userId } });
+    } catch (error) {
+      logger.error("Error finding user by ID", { userId, error });
+      throw error;
+    }
+  }
 }
 
 export default new UserService();

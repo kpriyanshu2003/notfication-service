@@ -1,4 +1,4 @@
-import { NotificationType } from "@prisma/client";
+import { NotificationStatus, NotificationType } from "@prisma/client";
 
 export interface CreateNotificationDto {
   recipientIdentifier: string; // email or phone
@@ -13,4 +13,27 @@ export interface NotificationPayload {
   type: NotificationType;
   title: string;
   content: string;
+}
+
+export interface NotificationResult {
+  success: boolean;
+  messageId?: string;
+  error?: string;
+}
+
+export interface NotificationFilters {
+  status?: NotificationStatus;
+  type?: NotificationType;
+  startDate?: Date;
+  endDate?: Date;
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginatedNotifications {
+  items: Array<any>;
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
 }

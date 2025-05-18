@@ -2,7 +2,9 @@ import { Notification, NotificationStatus, Prisma } from "@prisma/client";
 import prisma from "../config/database";
 import {
   CreateNotificationDto,
+  NotificationFilters,
   NotificationPayload,
+  PaginatedNotifications,
 } from "../types/notfication.type";
 import logger from "../config/logger";
 import { UserIdentifier } from "../types/user.type";
@@ -112,6 +114,55 @@ export class NotificationService {
       logger.error("Error updating notification status", {
         notificationId: id,
         status,
+        error,
+      });
+      throw error;
+    }
+  }
+
+  async getUserNotifications(
+    userId: string,
+    filters: NotificationFilters = {}
+  ): Promise<PaginatedNotifications> {
+    try {
+      const {
+        status,
+        type,
+        startDate,
+        endDate,
+        page = 1,
+        limit = 20,
+      } = filters;
+
+      const where: Prisma.NotificationWhereInput = { userId };
+
+      if (status) where.status = status;
+      if (type) where.type = type;
+
+      if (startDate || endDate) {
+        where.createdAt = {};
+        if (startDate) where.createdAt.gte = startDate;
+        if (endDate) where.createdAt.lte = endDate;
+      }
+
+      const total = await prisma.notification.count({ where });
+
+      const skip = (page - 1) * limit;
+      const pages = Math.ceil(total / limit);
+
+      // Get paginated notifications
+      const notifications = await prisma.notification.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+      });
+
+      return { items: notifications, total, page, limit, pages };
+    } catch (error) {
+      logger.error("Error getting user notifications", {
+        userId,
+        filters,
         error,
       });
       throw error;
