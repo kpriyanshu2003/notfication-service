@@ -23,6 +23,11 @@ export const env = {
   FCM_PROJECT_ID: process.env.FCM_PROJECT_ID || "",
   FCM_CLIENT_EMAIL: process.env.FCM_CLIENT_EMAIL || "",
   FCM_PRIVATE_KEY: process.env.FCM_PRIVATE_KEY?.replace(/\\n/g, "\n") || "",
+
+  // SMS config
+  ANDROID_SMS_GATEWAY_LOGIN: process.env.ANDROID_SMS_GATEWAY_LOGIN || "",
+  ANDROID_SMS_GATEWAY_PASSWORD: process.env.ANDROID_SMS_GATEWAY_PASSWORD || "",
+  ANDROID_SMS_GATEWAY_URL: process.env.ANDROID_SMS_GATEWAY_URL || "",
 };
 
 export const validateEnv = (): void => {

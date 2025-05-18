@@ -604,6 +604,11 @@ amqplib@^0.10.8:
     buffer-more-ints "~1.0.0"
     url-parse "~1.5.10"
 
+android-sms-gateway@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/android-sms-gateway/-/android-sms-gateway-2.0.0.tgz#03a60190c7cd64c1cced6908b3a81925a316aa29"
+  integrity sha512-U7oS8CZmr4gBKhnLose17zPSbE4EZyNJ+OUs7tMxHT5Msi8yHLb8QLGiLhpwGiRJ2O41v4dFtEv1f5nyeSeOPA==
+
 ansi-regex@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-5.0.1.tgz#082cb2c89c9fe8659a311a53bd6a4dc5301db304"

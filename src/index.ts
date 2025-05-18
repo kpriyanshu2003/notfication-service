@@ -1,8 +1,10 @@
 import createApp from "./app";
 import { connectDatabase, disconnectDatabase } from "./config/database";
 import { env, validateEnv } from "./config/env";
+import { initializeFCM } from "./config/fcm";
 import logger from "./config/logger";
 import { connectRabbitMQ, disconnectRabbitMQ } from "./config/rabbitmq";
+import { setupConsumers } from "./queues/consumer.queue";
 
 validateEnv();
 
@@ -12,13 +14,26 @@ const startService = async (): Promise<void> => {
 
     await connectDatabase();
     await connectRabbitMQ();
-    const app = createApp();
+    // initializeFCM();
 
-    const server = app.listen(env.PORT, () =>
-      logger.info(`API server is running on port ${env.PORT}`)
-    );
+    if (env.RUN_MODE === "consumer") {
+      logger.info("Setting up queue consumers");
+      await setupConsumers();
+      logger.info("Consumer service is running");
+    } else if (env.RUN_MODE === "service") {
+      const app = createApp();
 
-    setupGracefulShutdown(server);
+      const server = app.listen(env.PORT, () => {
+        logger.info(`API server is running on port ${env.PORT}`);
+      });
+
+      setupGracefulShutdown(server);
+    } else {
+      logger.error(
+        `Invalid RUN_MODE: ${env.RUN_MODE}. Must be 'service' or 'consumer'.`
+      );
+      process.exit(1);
+    }
   } catch (error) {
     logger.error("Failed to start service", { error });
     process.exit(1);

@@ -1,4 +1,4 @@
-// src/services/sms.service.ts
+import androidSms from "../config/androidsms";
 import logger from "../config/logger";
 import {
   NotificationPayload,
@@ -18,7 +18,7 @@ export class SmsService {
 
       const result = await this.sendViaSmsProvider(
         recipient,
-        notification.content
+        "Title: " + notification.title + "\n\nContent:\n" + notification.content
       );
 
       logger.info("SMS sent successfully", {
@@ -48,14 +48,30 @@ export class SmsService {
     phoneNumber: string,
     message: string
   ): Promise<{ messageId: string }> {
-    // Simulate SMS sending delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    try {
+      const formattedPhone = this.formatPhoneNumber(phoneNumber);
+      const messagePayload = {
+        phoneNumbers: [formattedPhone],
+        message: message,
+      };
 
-    // TODO: Replace with actual SMS provider integration
+      const response = await androidSms.send(messagePayload);
 
-    // Generate a fake message ID for demonstration
-    const messageId = `sms_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-    return { messageId };
+      if (!response || !response.id) {
+        throw new Error("Invalid response from SMS provider");
+      }
+
+      return { messageId: response.id };
+    } catch (error) {
+      logger.error("SMS provider error", { error, phoneNumber });
+      throw error;
+    }
+  }
+
+  private formatPhoneNumber(phoneNumber: string): string {
+    let cleaned = phoneNumber.replace(/\D/g, "");
+    if (!cleaned.startsWith("+")) cleaned = `+${cleaned}`;
+    return cleaned;
   }
 }
 

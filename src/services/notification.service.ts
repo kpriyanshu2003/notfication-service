@@ -9,6 +9,7 @@ import {
 import logger from "../config/logger";
 import { UserIdentifier } from "../types/user.type";
 import userService from "./user.service";
+import { EXCHANGES, publishToExchange } from "../config/rabbitmq";
 
 export class NotificationService {
   async createNotification(data: CreateNotificationDto): Promise<Notification> {
@@ -63,8 +64,11 @@ export class NotificationService {
         NotificationStatus.PROCESSING
       );
 
-      // FIXME: implement rabbitmq
-      const published = true; // await rabbitmq.publish(routingKey, payload);
+      const published = await publishToExchange(
+        EXCHANGES.NOTIFICATIONS,
+        routingKey,
+        payload
+      );
 
       if (!published) {
         await this.updateNotificationStatus(

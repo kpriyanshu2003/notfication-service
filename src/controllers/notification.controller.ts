@@ -1,8 +1,10 @@
-import { NotificationType } from "@prisma/client";
+import { NotificationType, User } from "@prisma/client";
 import { Request, Response } from "express";
 import { CreateNotificationDto } from "../types/notfication.type";
 import logger from "../config/logger";
 import notificationService from "../services/notification.service";
+import userService from "../services/user.service";
+import { UserIdentifier } from "../types/user.type";
 
 export class NotificationController {
   async sendNotification(req: Request, res: Response): Promise<any> {
@@ -36,11 +38,24 @@ export class NotificationController {
         notificationData
       );
 
+      let user: User | null = null;
+      if (
+        notification.type === NotificationType.EMAIL ||
+        notification.type === NotificationType.SMS
+      ) {
+        const identifier =
+          notification.type === NotificationType.EMAIL
+            ? { email: recipient }
+            : { phone: recipient };
+        user = await userService.findByIdentifier(identifier);
+      }
+
       return res.status(201).json({
         status: "success",
         message: "Notification queued successfully",
         data: {
-          id: notification.id,
+          userId: user?.id,
+          notificationId: notification.id,
           type: notification.type,
           status: notification.status,
           createdAt: notification.createdAt,

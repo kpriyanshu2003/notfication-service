@@ -6,7 +6,7 @@
   "author": "Kumar Priyanshu <az.priyanshu.rockstar@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "NODE_ENV=production ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
     "prisma:generate": "prisma generate --schema=./src/prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --schema=./src/prisma/schema.prisma",
@@ -16,6 +16,7 @@
   "dependencies": {
     "@prisma/client": "5.10.0",
     "amqplib": "^0.10.8",
+    "android-sms-gateway": "^2.0.0",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",

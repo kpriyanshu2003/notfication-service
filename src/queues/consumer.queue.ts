@@ -60,6 +60,8 @@ const processSmsNotification = async (
       );
     }
 
+    console.log(notification, user.phone);
+
     const result = await smsService.sendSms(notification, user.phone);
 
     if (result.success) {

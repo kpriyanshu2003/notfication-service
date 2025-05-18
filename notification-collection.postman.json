@@ -1,0 +1,61 @@
+{
+	"info": {
+		"_postman_id": "623197da-b8f7-4331-afd2-d2995904ca7d",
+		"name": "Notfication Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29585525"
+	},
+	"item": [
+		{
+			"name": "Get User Notifications",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users/:id/notifications",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						":id",
+						"notifications"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "bee3fed0-3b29-466e-83e1-ea27c2c7addd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send Notification",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"recipient\": \"\", // email or phone number\r\n    \"type\": \"\", // EMAIL, SMS, IN_APP\r\n    \"title\": \"\",\r\n    \"content\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/notifications",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"notifications"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
